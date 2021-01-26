@@ -82,7 +82,7 @@ public class Gemstone : MonoBehaviour
         StartCoroutine(DestroyGemstone());
     }
 
-    IEnumerator DestroyGemstone()
+    private IEnumerator DestroyGemstone()
     {
         yield return new WaitForSeconds(0.5f);
         Destroy(gameObject);
