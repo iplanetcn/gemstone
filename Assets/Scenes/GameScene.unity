@@ -281,8 +281,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gemstone: {fileID: 2874734034313622828, guid: 45858231f0c6e47f7b0603a78a4338b0, type: 3}
-  rows: 16
-  columns: 9
+  rows: 8
+  columns: 6
   spriteList:
   - {fileID: 21300000, guid: 7d77110b6b04d8740af77be1c55597a9, type: 3}
   - {fileID: 21300000, guid: 5966babc02e96d44cb218c4c7d629386, type: 3}

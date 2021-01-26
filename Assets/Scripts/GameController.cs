@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -27,13 +28,12 @@ public class GameController : MonoBehaviour, ISelectListener
     private void Start()
     {
         // 设置camera
-        var offsetX = columns / 2f - 0.5f;
-        var offsetY = rows / 2f - 0.5f;
-        var cameraTransform = _camera.transform;
-        var oldCameraPosition = cameraTransform.position;
-        var newCameraPosition =
-            new Vector3(oldCameraPosition.x + offsetX, oldCameraPosition.y + offsetY, oldCameraPosition.z);
-        cameraTransform.position = newCameraPosition;
+        // var offsetX = columns / 2f - 0.5f;
+        // var offsetY = rows / 2f - 0.5f;
+        // var cameraTransform = _camera.transform;
+        // var oldCameraPosition = cameraTransform.position;
+        // var newCameraPosition = new Vector3(oldCameraPosition.x + offsetX, oldCameraPosition.y + offsetY, oldCameraPosition.z);
+        // cameraTransform.position = newCameraPosition;
         _camera.orthographicSize = columns < 6 ? 5 : columns + 1;
 
         // 设置gemstone
@@ -63,6 +63,7 @@ public class GameController : MonoBehaviour, ISelectListener
         var item = Instantiate(gemstone);
         item.rowIndex = row;
         item.columnIndex = column;
+        item.SetOffset(new Vector2(columns / 2f - 0.5f, rows / 2f - 0.5f));
         item.SetSpriteList(spriteList);
         return item;
     }
@@ -104,8 +105,17 @@ public class GameController : MonoBehaviour, ISelectListener
     private void ExchangeAndMatch(Gemstone g1, Gemstone g2)
     {
         Exchange(g1, g2);
-        Match(g1);
-        Match(g2);
+        if (!Match(g1) && !Match(g2))
+        {
+            // 还原
+            StartCoroutine(Restore(g1, g2));
+        }
+    }
+
+    private IEnumerator Restore(Gemstone g1, Gemstone g2)
+    {
+        yield return new WaitForSeconds(0.6f);
+        Exchange(g1, g2);
     }
 
     /// <summary>
@@ -138,14 +148,16 @@ public class GameController : MonoBehaviour, ISelectListener
     /// 在gemstone周围按照规则匹配
     /// </summary>
     /// <param name="g">指定gemstone</param>
-    private void Match(Gemstone g)
+    private bool Match(Gemstone g)
     {
         // 判断非空
         if (g == null)
         {
-            return;
+            return false;
         }
 
+        var isMatch = false;
+        
         // 判断横排
         var rowGemstones = gemstoneList[g.rowIndex];
         var tempHorizontal = new List<Gemstone> {g};
@@ -153,7 +165,6 @@ public class GameController : MonoBehaviour, ISelectListener
         AppendLess(rowGemstones, tempHorizontal, g.columnIndex);
         // 右边
         AppendMore(rowGemstones, tempHorizontal, g.columnIndex);
-        CheckAndCrush(tempHorizontal);
 
         // 判断竖排
         var columnGemstones = gemstoneList.Select(t => t[g.columnIndex]).ToList();
@@ -162,7 +173,20 @@ public class GameController : MonoBehaviour, ISelectListener
         AppendLess(columnGemstones, tempVertical, g.rowIndex);
         // 右边
         AppendMore(columnGemstones, tempVertical, g.rowIndex);
-        CheckAndCrush(tempVertical);
+
+        // 判断是否匹配三消规则
+        if (tempHorizontal.Count >= 3)
+        {
+            tempHorizontal.ForEach(gt => gt.CrushGemstone());
+            isMatch = true;
+        }
+        else if (tempVertical.Count >= 3)
+        {
+            tempVertical.ForEach(gv => gv.CrushGemstone());
+            isMatch = true;
+        }
+
+        return isMatch;
     }
 
 
@@ -185,10 +209,10 @@ public class GameController : MonoBehaviour, ISelectListener
     /// <summary>
     /// 过滤列表中小于position且与position的gemstoneType一致的数据
     /// </summary>
-    /// <param name="from">源列表</param>
+    /// <param name="src">源列表</param>
     /// <param name="dist">目标列表</param>
     /// <param name="position">位置</param>
-    private static void AppendLess(IReadOnlyList<Gemstone> from, IList<Gemstone> dist, int position)
+    private static void AppendLess(IReadOnlyList<Gemstone> src, IList<Gemstone> dist, int position)
     {
         for (var i = position; i > 0; i--)
         {
@@ -199,9 +223,9 @@ public class GameController : MonoBehaviour, ISelectListener
             }
 
             // 将相邻且相同类型的数据加入到列表，否则直接退出循环
-            if (from[i].GemstoneType() == dist[0].GemstoneType())
+            if (src[i].GetGemstoneType() == dist[0].GetGemstoneType())
             {
-                dist.Add(from[i]);
+                dist.Add(src[i]);
             }
             else
             {
@@ -213,12 +237,12 @@ public class GameController : MonoBehaviour, ISelectListener
     /// <summary>
     /// 过滤列表中大于position且与position的gemstoneType一致的数据
     /// </summary>
-    /// <param name="from">源列表</param>
+    /// <param name="src">源列表</param>
     /// <param name="dist">目标列表</param>
     /// <param name="position">位置</param>
-    private static void AppendMore(IReadOnlyList<Gemstone> from, IList<Gemstone> dist, int position)
+    private static void AppendMore(IReadOnlyList<Gemstone> src, IList<Gemstone> dist, int position)
     {
-        for (var i = position; i < from.Count; i++)
+        for (var i = position; i < src.Count; i++)
         {
             // 如果为当前位置，则继续
             if (i == position)
@@ -227,27 +251,14 @@ public class GameController : MonoBehaviour, ISelectListener
             }
 
             // 将相邻且相同类型的数据加入到列表，否则直接退出循环
-            if (from[i].GemstoneType() == dist[0].GemstoneType())
+            if (src[i].GetGemstoneType() == dist[0].GetGemstoneType())
             {
-                dist.Add(from[i]);
+                dist.Add(src[i]);
             }
             else
             {
                 break;
             }
-        }
-    }
-
-    private static void CheckAndCrush(IReadOnlyCollection<Gemstone> gl)
-    {
-        if (gl.Count < 3)
-        {
-            return;
-        }
-
-        foreach (var g in gl)
-        {
-            g.CrushGemstone();
         }
     }
 }

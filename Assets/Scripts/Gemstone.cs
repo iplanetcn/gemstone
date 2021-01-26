@@ -24,6 +24,8 @@ public class Gemstone : MonoBehaviour
 
     private Vector3 _targetPosition;
 
+    private Vector2 _offset;
+
     private void Awake()
     {
         isSelect = false;
@@ -35,7 +37,6 @@ public class Gemstone : MonoBehaviour
     private void Start()
     {
         _gemstoneType = Random.Range(0, _spriteList.Count);
-        Debug.Log("gemstoneType: " + _gemstoneType);
         StartCoroutine(DelayAndInitialTargetPosition());
     }
 
@@ -53,13 +54,13 @@ public class Gemstone : MonoBehaviour
     
     public void Move()
     {
-        _targetPosition = new Vector3(columnIndex, rowIndex, 0);
+        _targetPosition = new Vector3(columnIndex - _offset.x, rowIndex - _offset.y, 0);
     }
 
-    IEnumerator DelayAndInitialTargetPosition()
+    private IEnumerator DelayAndInitialTargetPosition()
     {
         yield return new WaitForSeconds(1);
-        _targetPosition = new Vector3(columnIndex, rowIndex , 0);
+        Move();
     }
 
     private void OnMouseDown()
@@ -72,8 +73,10 @@ public class Gemstone : MonoBehaviour
         _spriteList = sprites;
     }
     
-    public int GemstoneType() => _gemstoneType;
+    public int GetGemstoneType() => _gemstoneType;
 
+    public void SetOffset(Vector2 offset) => _offset = offset;
+    
     /// <summary>
     /// 消除gemstone
     /// </summary>
