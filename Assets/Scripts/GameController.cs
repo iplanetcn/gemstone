@@ -214,7 +214,7 @@ public class GameController : MonoBehaviour, ISelectListener
     /// <param name="position">位置</param>
     private static void AppendLess(IReadOnlyList<Gemstone> src, IList<Gemstone> dist, int position)
     {
-        for (var i = position; i > 0; i--)
+        for (var i = position; i >= 0; i--)
         {
             // 如果为当前位置，则继续
             if (i == position)
