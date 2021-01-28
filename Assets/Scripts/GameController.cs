@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using UnityEngine;
 
@@ -151,7 +152,7 @@ public class GameController : MonoBehaviour, ISelectListener
     private bool Match(Gemstone g)
     {
         // 判断非空
-        if (g == null)
+        if (g == null || g.isCrushed)
         {
             return false;
         }
@@ -162,17 +163,17 @@ public class GameController : MonoBehaviour, ISelectListener
         var rowGemstones = gemstoneList[g.rowIndex];
         var tempHorizontal = new List<Gemstone> {g};
         // 左边
-        AppendLess(rowGemstones, tempHorizontal, g.columnIndex);
+        GemstoneUtils.AppendLess(rowGemstones, tempHorizontal, g.columnIndex);
         // 右边
-        AppendMore(rowGemstones, tempHorizontal, g.columnIndex);
+        GemstoneUtils.AppendMore(rowGemstones, tempHorizontal, g.columnIndex);
 
         // 判断竖排
         var columnGemstones = gemstoneList.Select(t => t[g.columnIndex]).ToList();
         var tempVertical = new List<Gemstone> {g};
         // 上边
-        AppendLess(columnGemstones, tempVertical, g.rowIndex);
+        GemstoneUtils.AppendLess(columnGemstones, tempVertical, g.rowIndex);
         // 右边
-        AppendMore(columnGemstones, tempVertical, g.rowIndex);
+        GemstoneUtils.AppendMore(columnGemstones, tempVertical, g.rowIndex);
 
         // 判断是否匹配三消规则
         if (tempHorizontal.Count >= 3)
@@ -189,7 +190,6 @@ public class GameController : MonoBehaviour, ISelectListener
         return isMatch;
     }
 
-
     /// <summary>
     /// 按照规则逐行匹配
     /// </summary>
@@ -204,61 +204,5 @@ public class GameController : MonoBehaviour, ISelectListener
     private void MatchAllColumn()
     {
         throw new NotImplementedException();
-    }
-
-    /// <summary>
-    /// 过滤列表中小于position且与position的gemstoneType一致的数据
-    /// </summary>
-    /// <param name="src">源列表</param>
-    /// <param name="dist">目标列表</param>
-    /// <param name="position">位置</param>
-    private static void AppendLess(IReadOnlyList<Gemstone> src, IList<Gemstone> dist, int position)
-    {
-        for (var i = position; i >= 0; i--)
-        {
-            // 如果为当前位置，则继续
-            if (i == position)
-            {
-                continue;
-            }
-
-            // 将相邻且相同类型的数据加入到列表，否则直接退出循环
-            if (src[i].GetGemstoneType() == dist[0].GetGemstoneType())
-            {
-                dist.Add(src[i]);
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
-
-    /// <summary>
-    /// 过滤列表中大于position且与position的gemstoneType一致的数据
-    /// </summary>
-    /// <param name="src">源列表</param>
-    /// <param name="dist">目标列表</param>
-    /// <param name="position">位置</param>
-    private static void AppendMore(IReadOnlyList<Gemstone> src, IList<Gemstone> dist, int position)
-    {
-        for (var i = position; i < src.Count; i++)
-        {
-            // 如果为当前位置，则继续
-            if (i == position)
-            {
-                continue;
-            }
-
-            // 将相邻且相同类型的数据加入到列表，否则直接退出循环
-            if (src[i].GetGemstoneType() == dist[0].GetGemstoneType())
-            {
-                dist.Add(src[i]);
-            }
-            else
-            {
-                break;
-            }
-        }
     }
 }

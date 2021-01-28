@@ -6,6 +6,8 @@ using Random = UnityEngine.Random;
 
 public class Gemstone : MonoBehaviour
 {
+    private Guid _guid;
+        
     public int rowIndex;
 
     public int columnIndex;
@@ -26,16 +28,20 @@ public class Gemstone : MonoBehaviour
 
     private Vector2 _offset;
 
+    public bool isCrushed;
+
     private void Awake()
     {
         isSelect = false;
         selectListener = GameObject.Find("GameController").GetComponent<GameController>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _outline = transform.Find("outline").gameObject;
+        _guid = Guid.NewGuid();
     }
 
     private void Start()
     {
+        isCrushed = false;
         _gemstoneType = Random.Range(0, _spriteList.Count);
         StartCoroutine(DelayAndInitialTargetPosition());
     }
@@ -82,12 +88,18 @@ public class Gemstone : MonoBehaviour
     /// </summary>
     public void CrushGemstone()
     {
-        StartCoroutine(DestroyGemstone());
+        StartCoroutine(DoCrushGemstone());
     }
 
-    private IEnumerator DestroyGemstone()
+    private IEnumerator DoCrushGemstone()
     {
         yield return new WaitForSeconds(0.5f);
-        Destroy(gameObject);
+        isCrushed = true;
+        gameObject.SetActive(false);
+    }
+
+    public bool IsSameGuid(Gemstone other)
+    {
+        return !(other is null) && _guid.Equals(other._guid);
     }
 }
