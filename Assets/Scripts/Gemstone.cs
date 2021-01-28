@@ -6,34 +6,23 @@ using Random = UnityEngine.Random;
 
 public class Gemstone : MonoBehaviour
 {
-    private Guid _guid;
-        
     public int rowIndex;
-
     public int columnIndex;
-
-    public ISelectListener selectListener;
-
+    public GameController gameController;
     public bool isSelect;
-
-    private List<Sprite> _spriteList;
-
-    private SpriteRenderer _spriteRenderer;
-
-    private int _gemstoneType;
-
-    private GameObject _outline;
-
-    private Vector3 _targetPosition;
-
-    private Vector2 _offset;
-
     public bool isCrushed;
+    public int gemstoneType;
+
+    private Guid _guid;
+    private GameObject _outline;
+    private Vector3 _targetPosition;
+    private Vector2 _offset;
+    private SpriteRenderer _spriteRenderer;
 
     private void Awake()
     {
         isSelect = false;
-        selectListener = GameObject.Find("GameController").GetComponent<GameController>();
+        gameController = GameObject.Find("GameController").GetComponent<GameController>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _outline = transform.Find("outline").gameObject;
         _guid = Guid.NewGuid();
@@ -42,22 +31,21 @@ public class Gemstone : MonoBehaviour
     private void Start()
     {
         isCrushed = false;
-        _gemstoneType = Random.Range(0, _spriteList.Count);
         StartCoroutine(DelayAndInitialTargetPosition());
     }
 
     private void Update()
     {
-        _spriteRenderer.sprite = _spriteList[_gemstoneType];
+        _spriteRenderer.sprite = gameController.spriteList[gemstoneType];
         _outline.SetActive(isSelect);
-        
+
         if (Math.Abs(Vector3.Distance(_targetPosition, transform.localPosition)) > 0f)
         {
             var diff = Vector3.MoveTowards(transform.localPosition, _targetPosition, 8f * Time.deltaTime);
-            transform.localPosition = diff;   
+            transform.localPosition = diff;
         }
     }
-    
+
     public void Move()
     {
         _targetPosition = new Vector3(columnIndex - _offset.x, rowIndex - _offset.y, 0);
@@ -71,18 +59,13 @@ public class Gemstone : MonoBehaviour
 
     private void OnMouseDown()
     {
-        selectListener.Select(this);
+        gameController.Select(this);
     }
 
-    public void SetSpriteList(List<Sprite> sprites)
-    {
-        _spriteList = sprites;
-    }
-    
-    public int GetGemstoneType() => _gemstoneType;
+    public Guid GetGuid() => _guid;
 
     public void SetOffset(Vector2 offset) => _offset = offset;
-    
+
     /// <summary>
     /// 消除gemstone
     /// </summary>
@@ -96,10 +79,5 @@ public class Gemstone : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         isCrushed = true;
         gameObject.SetActive(false);
-    }
-
-    public bool IsSameGuid(Gemstone other)
-    {
-        return !(other is null) && _guid.Equals(other._guid);
     }
 }

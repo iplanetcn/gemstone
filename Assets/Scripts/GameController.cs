@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-public class GameController : MonoBehaviour, ISelectListener
+public class GameController : MonoBehaviour
 {
     public Gemstone gemstone;
 
@@ -64,8 +65,8 @@ public class GameController : MonoBehaviour, ISelectListener
         var item = Instantiate(gemstone);
         item.rowIndex = row;
         item.columnIndex = column;
+        item.gemstoneType = Random.Range(0, spriteList.Count);
         item.SetOffset(new Vector2(columns / 2f - 0.5f, rows / 2f - 0.5f));
-        item.SetSpriteList(spriteList);
         return item;
     }
 
@@ -110,6 +111,10 @@ public class GameController : MonoBehaviour, ISelectListener
         {
             // 还原
             StartCoroutine(Restore(g1, g2));
+        }
+        else
+        {
+            //  产生新的gemstone，并播放位移动画
         }
     }
 

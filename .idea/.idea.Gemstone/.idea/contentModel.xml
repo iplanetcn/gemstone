@@ -10,7 +10,6 @@
           <e p="GameController.cs" t="Include" />
           <e p="Gemstone.cs" t="Include" />
           <e p="GemstoneUtils.cs" t="Include" />
-          <e p="ISelectListener.cs" t="Include" />
         </e>
       </e>
       <e p="Gemstone.sln" t="IncludeFlat" />

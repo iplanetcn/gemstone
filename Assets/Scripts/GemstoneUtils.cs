@@ -1,11 +1,7 @@
 using System.Collections.Generic;
 
-public class GemstoneUtils
+public static class GemstoneUtils
 {
-    private GemstoneUtils()
-    {
-    }
-    
     /// <summary>
     /// 过滤列表中小于position且与position的gemstoneType一致的数据
     /// </summary>
@@ -23,7 +19,7 @@ public class GemstoneUtils
             }
 
             // 将相邻未消除且相同类型的数据加入到列表，否则直接退出循环
-            if (!src[i].isCrushed && src[i].GetGemstoneType() == dist[0].GetGemstoneType())
+            if (!src[i].isCrushed && src[i].gemstoneType == dist[0].gemstoneType)
             {
                 dist.Add(src[i]);
             }
@@ -51,7 +47,7 @@ public class GemstoneUtils
             }
 
             // 将相邻未消除且相同类型的数据加入到列表，否则直接退出循环
-            if (!src[i].isCrushed && src[i].GetGemstoneType() == dist[0].GetGemstoneType())
+            if (!src[i].isCrushed && src[i].gemstoneType == dist[0].gemstoneType)
             {
                 dist.Add(src[i]);
             }
@@ -69,6 +65,6 @@ public class GemstoneUtils
             return false;
         }
 
-        return one.IsSameGuid(another);
+        return one.GetGuid().Equals(another.GetGuid());
     }
 }

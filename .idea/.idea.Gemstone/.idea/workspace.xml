@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="53c0ad30-f762-4cc6-af94-9f433b778b9a" name="Default Changelist" comment="update gemstone">
-      <changelist_data name="" email="" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/GemstoneUtils.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/GemstoneUtils.cs.meta" afterDir="false" />
+    <list default="true" id="53c0ad30-f762-4cc6-af94-9f433b778b9a" name="Default Changelist" comment="update game logic">
+      <changelist_data />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Gemstone/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Gemstone/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Gemstone/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Gemstone/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/GameController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GameController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Gemstone.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Gemstone.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GemstoneUtils.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GemstoneUtils.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/ISelectListener.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/ISelectListener.cs.meta" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,7 +29,6 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/GameController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/7C881E71-2F79-461D-96F9-95658A2D07FF/d3/f5473e31/GameObject.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/7C881E71-2F79-461D-96F9-95658A2D07FF/68/32d72d5e/Screen.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/ISelectListener.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/99258562-0D64-4271-98DD-F3A0E1467733/5b/4795d6a2/ArrayList.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/7C881E71-2F79-461D-96F9-95658A2D07FF/e0/f69867b5/Vector3.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/7C881E71-2F79-461D-96F9-95658A2D07FF/4e/7d2425ab/Camera.cs" root0="SKIP_HIGHLIGHTING" />
@@ -46,8 +46,8 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/Gems.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/GemType.cs" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/Gemstone.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/GemstoneUtils.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Gemstone.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/GameController.cs" />
       </list>
     </option>
@@ -100,7 +100,7 @@
       <workItem from="1611639015156" duration="3117000" />
       <workItem from="1611643274879" duration="1390000" />
       <workItem from="1611805061273" duration="7000" />
-      <workItem from="1611821677873" duration="4026000" />
+      <workItem from="1611821677873" duration="5285000" />
     </task>
     <task id="LOCAL-00001" summary="update .gitignore">
       <created>1611636177270</created>
@@ -116,7 +116,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611636814797</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="update game logic">
+      <created>1611826392207</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1611826392207</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -144,7 +151,8 @@
     </ignored-roots>
     <MESSAGE value="update .gitignore" />
     <MESSAGE value="update gemstone" />
-    <option name="LAST_COMMIT_MESSAGE" value="update gemstone" />
+    <MESSAGE value="update game logic" />
+    <option name="LAST_COMMIT_MESSAGE" value="update game logic" />
   </component>
   <component name="WindowStateProjectService">
     <state x="100" y="123" width="1720" height="804" key="DiffContextDialog" timestamp="1611658208720">
@@ -248,10 +256,10 @@
     <state width="664" height="543" key="SwitcherDM/-1440.123.1440.877/0.23.1920.1004@0.23.1920.1004" timestamp="1611826235341" />
     <state width="498" height="445" key="SwitcherDM/0.23.1440.824/1440.23.1080.1897@0.23.1440.824" timestamp="1611304879510" />
     <state width="498" height="445" key="SwitcherDM/0.23.1440.824@0.23.1440.824" timestamp="1611594420751" />
-    <state x="560" y="265" key="Vcs.Push.Dialog.v2" timestamp="1611635486094">
+    <state x="560" y="265" key="Vcs.Push.Dialog.v2" timestamp="1611827667918">
       <screen x="0" y="23" width="1920" height="1004" />
     </state>
-    <state x="560" y="265" key="Vcs.Push.Dialog.v2/-1440.123.1440.877/0.23.1920.1004@0.23.1920.1004" timestamp="1611635486094" />
+    <state x="560" y="265" key="Vcs.Push.Dialog.v2/-1440.123.1440.877/0.23.1920.1004@0.23.1920.1004" timestamp="1611827667918" />
     <state x="511" y="200" width="896" height="827" key="search.everywhere.popup" timestamp="1611824750123">
       <screen x="0" y="23" width="1920" height="1004" />
     </state>
