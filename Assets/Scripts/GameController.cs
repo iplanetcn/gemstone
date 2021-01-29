@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using NUnit.Framework;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -21,10 +22,13 @@ public class GameController : MonoBehaviour
     private Gemstone _currentGemstone;
 
     private Camera _camera;
+    
+    private Transform _spriteMaskTransform;
 
     private void Awake()
     {
         _camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+        _spriteMaskTransform = GameObject.FindWithTag("SpriteMask").GetComponent<Transform>();
     }
 
     private void Start()
@@ -37,6 +41,7 @@ public class GameController : MonoBehaviour
         // var newCameraPosition = new Vector3(oldCameraPosition.x + offsetX, oldCameraPosition.y + offsetY, oldCameraPosition.z);
         // cameraTransform.position = newCameraPosition;
         _camera.orthographicSize = columns < 6 ? 5 : columns + 1;
+        _spriteMaskTransform.localScale = new Vector3(columns, rows, 1);
 
         // 设置gemstone
         gemstoneList = new List<List<Gemstone>>();
@@ -46,7 +51,7 @@ public class GameController : MonoBehaviour
             var temp = new List<Gemstone>();
             for (var column = 0; column < columns; column++)
             {
-                var g = CreateGemstone(row, column);
+                var g = SpawnGemstone(row, column);
                 temp.Add(g);
             }
 
@@ -60,15 +65,28 @@ public class GameController : MonoBehaviour
     /// <param name="row">行</param>
     /// <param name="column">列</param>
     /// <returns></returns>
-    private Gemstone CreateGemstone(int row, int column)
+    private Gemstone SpawnGemstone(int row, int column)
     {
         var item = Instantiate(gemstone);
         item.rowIndex = row;
         item.columnIndex = column;
         item.gemstoneType = Random.Range(0, spriteList.Count);
-        item.SetOffset(new Vector2(columns / 2f - 0.5f, rows / 2f - 0.5f));
+        item.SetOffset(new Vector2(GetOffsetX(), GetOffsetY()));
         return item;
     }
+
+    private float GetOffsetX()
+    {
+        return columns / 2f - 0.5f;
+    }
+    
+    private float GetOffsetY()
+    {
+        return rows / 2f - 0.5f;
+    }
+
+   
+
 
     /// <summary>
     /// <para>1. 检查当前选择的gemstone是否为空</para>
@@ -115,6 +133,7 @@ public class GameController : MonoBehaviour
         else
         {
             //  产生新的gemstone，并播放位移动画
+            StartCoroutine(SpawnNewSpriteForGemstones());
         }
     }
 
@@ -163,7 +182,7 @@ public class GameController : MonoBehaviour
         }
 
         var isMatch = false;
-        
+
         // 判断横排
         var rowGemstones = gemstoneList[g.rowIndex];
         var tempHorizontal = new List<Gemstone> {g};
@@ -209,5 +228,69 @@ public class GameController : MonoBehaviour
     private void MatchAllColumn()
     {
         throw new NotImplementedException();
+    }
+
+    private IEnumerator SpawnNewSpriteForGemstones()
+    {
+        yield return new WaitForSeconds(0.55f);
+        List<List<Gemstone>> shouldArrangeGemstones = new List<List<Gemstone>>();
+        for (int i = 0; i < columns; i++)
+        {
+            bool needArrange = false;
+            List<Gemstone> gemstones = gemstoneList.Select(t =>
+            {
+                if (t[i].isCrushed)
+                {
+                    needArrange = true;
+                }
+                return t[i];
+            }).ToList();
+
+            if (needArrange)
+            {
+                shouldArrangeGemstones.Add(gemstones);
+            }
+        }
+
+        if (shouldArrangeGemstones.Count > 0)
+        {
+            int maxShift = 0;
+            foreach (var colList in shouldArrangeGemstones)
+            {
+                List<GemstoneInfo> gemstoneInfos = new List<GemstoneInfo>();
+                Vector3 p = colList[0].transform.position;
+                // 提取同一列中未被消除的Gemstone信息
+                foreach (Gemstone g in colList)
+                {
+                    if (!g.isCrushed)
+                    {
+                        gemstoneInfos.Add(new GemstoneInfo(g.transform.position, g.gemstoneType));
+                    }
+                }
+
+                // 从顶端生成新的Gemstone信息
+                var shiftCount = rows - gemstoneInfos.Count;
+                for (int i = 0; i < shiftCount; i++)
+                {
+                    var position = new Vector3(p.x,  rows + i + 1 - GetOffsetY(), p.z);
+                    gemstoneInfos.Add(new GemstoneInfo(position,Random.Range(0, spriteList.Count)));
+                }
+
+                // 更新列表信息及状态
+                for (var i = 0; i < colList.Count; i++)
+                {
+                    colList[i].ActiveWithGemstoneInfo(gemstoneInfos[i]);
+                }
+
+                // 计算最大偏移量
+                if (shiftCount > maxShift)
+                {
+                    maxShift = shiftCount;
+                }
+            }
+
+            float waitSeconds = maxShift / Time.deltaTime;
+            Debug.Log($"waitSeconds: {waitSeconds}");
+        }
     }
 }

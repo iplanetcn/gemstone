@@ -24,6 +24,7 @@ public class Gemstone : MonoBehaviour
         isSelect = false;
         gameController = GameObject.Find("GameController").GetComponent<GameController>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _spriteRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
         _outline = transform.Find("outline").gameObject;
         _guid = Guid.NewGuid();
     }
@@ -44,6 +45,19 @@ public class Gemstone : MonoBehaviour
             var diff = Vector3.MoveTowards(transform.localPosition, _targetPosition, 8f * Time.deltaTime);
             transform.localPosition = diff;
         }
+
+        if (isCrushed)
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
+    public void ActiveWithGemstoneInfo(GemstoneInfo gi)
+    {
+        gemstoneType = gi.GemstoneType;
+        transform.position = gi.Position;
+        gameObject.SetActive(true);
+        isCrushed = false;
     }
 
     public void Move()
@@ -78,6 +92,5 @@ public class Gemstone : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         isCrushed = true;
-        gameObject.SetActive(false);
     }
 }

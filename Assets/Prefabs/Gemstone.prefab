@@ -97,12 +97,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dd260aadbb1446e99a54923e3940e4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offsetX: -4
-  offsetY: -3
   rowIndex: 6
   columnIndex: 8
+  gameController: {fileID: 0}
   isSelect: 0
-  spriteList: []
+  isCrushed: 0
+  gemstoneType: 0
 --- !u!61 &6566070875608223742
 BoxCollider2D:
   m_ObjectHideFlags: 0
